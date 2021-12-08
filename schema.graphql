@@ -454,12 +454,12 @@ type Student {
   name: String
   class: StudentClassType
   books(
-    where: BookAssignmentWhereInput! = {}
-    orderBy: [BookAssignmentOrderByInput!]! = []
+    where: BookWhereInput! = {}
+    orderBy: [BookOrderByInput!]! = []
     take: Int
     skip: Int! = 0
-  ): [BookAssignment!]
-  booksCount(where: BookAssignmentWhereInput! = {}): Int
+  ): [Book!]
+  booksCount(where: BookWhereInput! = {}): Int
 }
 
 enum StudentClassType {
@@ -478,7 +478,7 @@ input StudentWhereInput {
   id: IDFilter
   name: StringFilter
   class: StudentClassTypeNullableFilter
-  books: BookAssignmentManyRelationFilter
+  books: BookManyRelationFilter
 }
 
 input StudentClassTypeNullableFilter {
@@ -488,10 +488,10 @@ input StudentClassTypeNullableFilter {
   not: StudentClassTypeNullableFilter
 }
 
-input BookAssignmentManyRelationFilter {
-  every: BookAssignmentWhereInput
-  some: BookAssignmentWhereInput
-  none: BookAssignmentWhereInput
+input BookManyRelationFilter {
+  every: BookWhereInput
+  some: BookWhereInput
+  none: BookWhereInput
 }
 
 input StudentOrderByInput {
@@ -503,14 +503,14 @@ input StudentOrderByInput {
 input StudentUpdateInput {
   name: String
   class: StudentClassType
-  books: BookAssignmentRelateToManyForUpdateInput
+  books: BookRelateToManyForUpdateInput
 }
 
-input BookAssignmentRelateToManyForUpdateInput {
-  disconnect: [BookAssignmentWhereUniqueInput!]
-  set: [BookAssignmentWhereUniqueInput!]
-  create: [BookAssignmentCreateInput!]
-  connect: [BookAssignmentWhereUniqueInput!]
+input BookRelateToManyForUpdateInput {
+  disconnect: [BookWhereUniqueInput!]
+  set: [BookWhereUniqueInput!]
+  create: [BookCreateInput!]
+  connect: [BookWhereUniqueInput!]
 }
 
 input StudentUpdateArgs {
@@ -521,25 +521,25 @@ input StudentUpdateArgs {
 input StudentCreateInput {
   name: String
   class: StudentClassType
-  books: BookAssignmentRelateToManyForCreateInput
+  books: BookRelateToManyForCreateInput
 }
 
-input BookAssignmentRelateToManyForCreateInput {
-  create: [BookAssignmentCreateInput!]
-  connect: [BookAssignmentWhereUniqueInput!]
+input BookRelateToManyForCreateInput {
+  create: [BookCreateInput!]
+  connect: [BookWhereUniqueInput!]
 }
 
 type Book {
   id: ID!
   title: String
   category: BookCategoryType
-  assignedToStudents(
-    where: BookAssignmentWhereInput! = {}
-    orderBy: [BookAssignmentOrderByInput!]! = []
+  assignToStudent(
+    where: StudentWhereInput! = {}
+    orderBy: [StudentOrderByInput!]! = []
     take: Int
     skip: Int! = 0
-  ): [BookAssignment!]
-  assignedToStudentsCount(where: BookAssignmentWhereInput! = {}): Int
+  ): [Student!]
+  assignToStudentCount(where: StudentWhereInput! = {}): Int
 }
 
 enum BookCategoryType {
@@ -560,7 +560,7 @@ input BookWhereInput {
   id: IDFilter
   title: StringFilter
   category: BookCategoryTypeNullableFilter
-  assignedToStudents: BookAssignmentManyRelationFilter
+  assignToStudent: StudentManyRelationFilter
 }
 
 input BookCategoryTypeNullableFilter {
@@ -568,6 +568,12 @@ input BookCategoryTypeNullableFilter {
   in: [BookCategoryType!]
   notIn: [BookCategoryType!]
   not: BookCategoryTypeNullableFilter
+}
+
+input StudentManyRelationFilter {
+  every: StudentWhereInput
+  some: StudentWhereInput
+  none: StudentWhereInput
 }
 
 input BookOrderByInput {
@@ -579,7 +585,14 @@ input BookOrderByInput {
 input BookUpdateInput {
   title: String
   category: BookCategoryType
-  assignedToStudents: BookAssignmentRelateToManyForUpdateInput
+  assignToStudent: StudentRelateToManyForUpdateInput
+}
+
+input StudentRelateToManyForUpdateInput {
+  disconnect: [StudentWhereUniqueInput!]
+  set: [StudentWhereUniqueInput!]
+  create: [StudentCreateInput!]
+  connect: [StudentWhereUniqueInput!]
 }
 
 input BookUpdateArgs {
@@ -590,67 +603,338 @@ input BookUpdateArgs {
 input BookCreateInput {
   title: String
   category: BookCategoryType
-  assignedToStudents: BookAssignmentRelateToManyForCreateInput
+  assignToStudent: StudentRelateToManyForCreateInput
 }
 
-type BookAssignment {
+input StudentRelateToManyForCreateInput {
+  create: [StudentCreateInput!]
+  connect: [StudentWhereUniqueInput!]
+}
+
+type Customer {
   id: ID!
-  bookName: Book
-  studentName: Student
+  Name: String
+  Email: String
+  Address: String
+  Pincode: Int
+  PhoneNumber: Int
+  Rooms(
+    where: BookingWhereInput! = {}
+    orderBy: [BookingOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [Booking!]
+  RoomsCount(where: BookingWhereInput! = {}): Int
 }
 
-input BookAssignmentWhereUniqueInput {
+input CustomerWhereUniqueInput {
+  id: ID
+  Email: String
+}
+
+input CustomerWhereInput {
+  AND: [CustomerWhereInput!]
+  OR: [CustomerWhereInput!]
+  NOT: [CustomerWhereInput!]
+  id: IDFilter
+  Name: StringFilter
+  Email: StringFilter
+  Address: StringFilter
+  Pincode: IntNullableFilter
+  PhoneNumber: IntNullableFilter
+  Rooms: BookingManyRelationFilter
+}
+
+input IntNullableFilter {
+  equals: Int
+  in: [Int!]
+  notIn: [Int!]
+  lt: Int
+  lte: Int
+  gt: Int
+  gte: Int
+  not: IntNullableFilter
+}
+
+input BookingManyRelationFilter {
+  every: BookingWhereInput
+  some: BookingWhereInput
+  none: BookingWhereInput
+}
+
+input CustomerOrderByInput {
+  id: OrderDirection
+  Name: OrderDirection
+  Email: OrderDirection
+  Address: OrderDirection
+  Pincode: OrderDirection
+  PhoneNumber: OrderDirection
+}
+
+input CustomerUpdateInput {
+  Name: String
+  Email: String
+  Address: String
+  Pincode: Int
+  PhoneNumber: Int
+  Rooms: BookingRelateToManyForUpdateInput
+}
+
+input BookingRelateToManyForUpdateInput {
+  disconnect: [BookingWhereUniqueInput!]
+  set: [BookingWhereUniqueInput!]
+  create: [BookingCreateInput!]
+  connect: [BookingWhereUniqueInput!]
+}
+
+input CustomerUpdateArgs {
+  where: CustomerWhereUniqueInput!
+  data: CustomerUpdateInput!
+}
+
+input CustomerCreateInput {
+  Name: String
+  Email: String
+  Address: String
+  Pincode: Int
+  PhoneNumber: Int
+  Rooms: BookingRelateToManyForCreateInput
+}
+
+input BookingRelateToManyForCreateInput {
+  create: [BookingCreateInput!]
+  connect: [BookingWhereUniqueInput!]
+}
+
+type Hotel {
+  id: ID!
+  Name: String
+  Branch: String
+  Country: String
+  Rooms(
+    where: RoomWhereInput! = {}
+    orderBy: [RoomOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [Room!]
+  RoomsCount(where: RoomWhereInput! = {}): Int
+}
+
+input HotelWhereUniqueInput {
   id: ID
 }
 
-input BookAssignmentWhereInput {
-  AND: [BookAssignmentWhereInput!]
-  OR: [BookAssignmentWhereInput!]
-  NOT: [BookAssignmentWhereInput!]
+input HotelWhereInput {
+  AND: [HotelWhereInput!]
+  OR: [HotelWhereInput!]
+  NOT: [HotelWhereInput!]
   id: IDFilter
-  bookName: BookWhereInput
-  studentName: StudentWhereInput
+  Name: StringFilter
+  Branch: StringFilter
+  Country: StringFilter
+  Rooms: RoomManyRelationFilter
 }
 
-input BookAssignmentOrderByInput {
+input RoomManyRelationFilter {
+  every: RoomWhereInput
+  some: RoomWhereInput
+  none: RoomWhereInput
+}
+
+input HotelOrderByInput {
   id: OrderDirection
+  Name: OrderDirection
+  Branch: OrderDirection
+  Country: OrderDirection
 }
 
-input BookAssignmentUpdateInput {
-  bookName: BookRelateToOneForUpdateInput
-  studentName: StudentRelateToOneForUpdateInput
+input HotelUpdateInput {
+  Name: String
+  Branch: String
+  Country: String
+  Rooms: RoomRelateToManyForUpdateInput
 }
 
-input BookRelateToOneForUpdateInput {
-  create: BookCreateInput
-  connect: BookWhereUniqueInput
+input RoomRelateToManyForUpdateInput {
+  disconnect: [RoomWhereUniqueInput!]
+  set: [RoomWhereUniqueInput!]
+  create: [RoomCreateInput!]
+  connect: [RoomWhereUniqueInput!]
+}
+
+input HotelUpdateArgs {
+  where: HotelWhereUniqueInput!
+  data: HotelUpdateInput!
+}
+
+input HotelCreateInput {
+  Name: String
+  Branch: String
+  Country: String
+  Rooms: RoomRelateToManyForCreateInput
+}
+
+input RoomRelateToManyForCreateInput {
+  create: [RoomCreateInput!]
+  connect: [RoomWhereUniqueInput!]
+}
+
+type Room {
+  id: ID!
+  HotelBranch: Hotel
+  RoomNo: Int
+  RoomDescription: String
+  RoomPrice: Int
+  Booking: Booking
+}
+
+input RoomWhereUniqueInput {
+  id: ID
+}
+
+input RoomWhereInput {
+  AND: [RoomWhereInput!]
+  OR: [RoomWhereInput!]
+  NOT: [RoomWhereInput!]
+  id: IDFilter
+  HotelBranch: HotelWhereInput
+  RoomNo: IntNullableFilter
+  RoomDescription: StringFilter
+  RoomPrice: IntNullableFilter
+  Booking: BookingWhereInput
+}
+
+input RoomOrderByInput {
+  id: OrderDirection
+  RoomNo: OrderDirection
+  RoomDescription: OrderDirection
+  RoomPrice: OrderDirection
+}
+
+input RoomUpdateInput {
+  HotelBranch: HotelRelateToOneForUpdateInput
+  RoomNo: Int
+  RoomDescription: String
+  RoomPrice: Int
+  Booking: BookingRelateToOneForUpdateInput
+}
+
+input HotelRelateToOneForUpdateInput {
+  create: HotelCreateInput
+  connect: HotelWhereUniqueInput
   disconnect: Boolean
 }
 
-input StudentRelateToOneForUpdateInput {
-  create: StudentCreateInput
-  connect: StudentWhereUniqueInput
+input BookingRelateToOneForUpdateInput {
+  create: BookingCreateInput
+  connect: BookingWhereUniqueInput
   disconnect: Boolean
 }
 
-input BookAssignmentUpdateArgs {
-  where: BookAssignmentWhereUniqueInput!
-  data: BookAssignmentUpdateInput!
+input RoomUpdateArgs {
+  where: RoomWhereUniqueInput!
+  data: RoomUpdateInput!
 }
 
-input BookAssignmentCreateInput {
-  bookName: BookRelateToOneForCreateInput
-  studentName: StudentRelateToOneForCreateInput
+input RoomCreateInput {
+  HotelBranch: HotelRelateToOneForCreateInput
+  RoomNo: Int
+  RoomDescription: String
+  RoomPrice: Int
+  Booking: BookingRelateToOneForCreateInput
 }
 
-input BookRelateToOneForCreateInput {
-  create: BookCreateInput
-  connect: BookWhereUniqueInput
+input HotelRelateToOneForCreateInput {
+  create: HotelCreateInput
+  connect: HotelWhereUniqueInput
 }
 
-input StudentRelateToOneForCreateInput {
-  create: StudentCreateInput
-  connect: StudentWhereUniqueInput
+input BookingRelateToOneForCreateInput {
+  create: BookingCreateInput
+  connect: BookingWhereUniqueInput
+}
+
+type Booking {
+  id: ID!
+  Customer(
+    where: CustomerWhereInput! = {}
+    orderBy: [CustomerOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [Customer!]
+  CustomerCount(where: CustomerWhereInput! = {}): Int
+  Room: Room
+  checkIn: DateTime
+  checkOut: DateTime
+}
+
+input BookingWhereUniqueInput {
+  id: ID
+}
+
+input BookingWhereInput {
+  AND: [BookingWhereInput!]
+  OR: [BookingWhereInput!]
+  NOT: [BookingWhereInput!]
+  id: IDFilter
+  Customer: CustomerManyRelationFilter
+  Room: RoomWhereInput
+  checkIn: DateTimeNullableFilter
+  checkOut: DateTimeNullableFilter
+}
+
+input CustomerManyRelationFilter {
+  every: CustomerWhereInput
+  some: CustomerWhereInput
+  none: CustomerWhereInput
+}
+
+input BookingOrderByInput {
+  id: OrderDirection
+  checkIn: OrderDirection
+  checkOut: OrderDirection
+}
+
+input BookingUpdateInput {
+  Customer: CustomerRelateToManyForUpdateInput
+  Room: RoomRelateToOneForUpdateInput
+  checkIn: DateTime
+  checkOut: DateTime
+}
+
+input CustomerRelateToManyForUpdateInput {
+  disconnect: [CustomerWhereUniqueInput!]
+  set: [CustomerWhereUniqueInput!]
+  create: [CustomerCreateInput!]
+  connect: [CustomerWhereUniqueInput!]
+}
+
+input RoomRelateToOneForUpdateInput {
+  create: RoomCreateInput
+  connect: RoomWhereUniqueInput
+  disconnect: Boolean
+}
+
+input BookingUpdateArgs {
+  where: BookingWhereUniqueInput!
+  data: BookingUpdateInput!
+}
+
+input BookingCreateInput {
+  Customer: CustomerRelateToManyForCreateInput
+  Room: RoomRelateToOneForCreateInput
+  checkIn: DateTime
+  checkOut: DateTime
+}
+
+input CustomerRelateToManyForCreateInput {
+  create: [CustomerCreateInput!]
+  connect: [CustomerWhereUniqueInput!]
+}
+
+input RoomRelateToOneForCreateInput {
+  create: RoomCreateInput
+  connect: RoomWhereUniqueInput
 }
 
 """
@@ -710,17 +994,36 @@ type Mutation {
   updateBooks(data: [BookUpdateArgs!]!): [Book]
   deleteBook(where: BookWhereUniqueInput!): Book
   deleteBooks(where: [BookWhereUniqueInput!]!): [Book]
-  createBookAssignment(data: BookAssignmentCreateInput!): BookAssignment
-  createBookAssignments(data: [BookAssignmentCreateInput!]!): [BookAssignment]
-  updateBookAssignment(
-    where: BookAssignmentWhereUniqueInput!
-    data: BookAssignmentUpdateInput!
-  ): BookAssignment
-  updateBookAssignments(data: [BookAssignmentUpdateArgs!]!): [BookAssignment]
-  deleteBookAssignment(where: BookAssignmentWhereUniqueInput!): BookAssignment
-  deleteBookAssignments(
-    where: [BookAssignmentWhereUniqueInput!]!
-  ): [BookAssignment]
+  createCustomer(data: CustomerCreateInput!): Customer
+  createCustomers(data: [CustomerCreateInput!]!): [Customer]
+  updateCustomer(
+    where: CustomerWhereUniqueInput!
+    data: CustomerUpdateInput!
+  ): Customer
+  updateCustomers(data: [CustomerUpdateArgs!]!): [Customer]
+  deleteCustomer(where: CustomerWhereUniqueInput!): Customer
+  deleteCustomers(where: [CustomerWhereUniqueInput!]!): [Customer]
+  createHotel(data: HotelCreateInput!): Hotel
+  createHotels(data: [HotelCreateInput!]!): [Hotel]
+  updateHotel(where: HotelWhereUniqueInput!, data: HotelUpdateInput!): Hotel
+  updateHotels(data: [HotelUpdateArgs!]!): [Hotel]
+  deleteHotel(where: HotelWhereUniqueInput!): Hotel
+  deleteHotels(where: [HotelWhereUniqueInput!]!): [Hotel]
+  createRoom(data: RoomCreateInput!): Room
+  createRooms(data: [RoomCreateInput!]!): [Room]
+  updateRoom(where: RoomWhereUniqueInput!, data: RoomUpdateInput!): Room
+  updateRooms(data: [RoomUpdateArgs!]!): [Room]
+  deleteRoom(where: RoomWhereUniqueInput!): Room
+  deleteRooms(where: [RoomWhereUniqueInput!]!): [Room]
+  createBooking(data: BookingCreateInput!): Booking
+  createBookings(data: [BookingCreateInput!]!): [Booking]
+  updateBooking(
+    where: BookingWhereUniqueInput!
+    data: BookingUpdateInput!
+  ): Booking
+  updateBookings(data: [BookingUpdateArgs!]!): [Booking]
+  deleteBooking(where: BookingWhereUniqueInput!): Booking
+  deleteBookings(where: [BookingWhereUniqueInput!]!): [Booking]
   endSession: Boolean!
   authenticateUserWithPassword(
     email: String!
@@ -807,14 +1110,38 @@ type Query {
   ): [Book!]
   book(where: BookWhereUniqueInput!): Book
   booksCount(where: BookWhereInput! = {}): Int
-  bookAssignments(
-    where: BookAssignmentWhereInput! = {}
-    orderBy: [BookAssignmentOrderByInput!]! = []
+  customers(
+    where: CustomerWhereInput! = {}
+    orderBy: [CustomerOrderByInput!]! = []
     take: Int
     skip: Int! = 0
-  ): [BookAssignment!]
-  bookAssignment(where: BookAssignmentWhereUniqueInput!): BookAssignment
-  bookAssignmentsCount(where: BookAssignmentWhereInput! = {}): Int
+  ): [Customer!]
+  customer(where: CustomerWhereUniqueInput!): Customer
+  customersCount(where: CustomerWhereInput! = {}): Int
+  hotels(
+    where: HotelWhereInput! = {}
+    orderBy: [HotelOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [Hotel!]
+  hotel(where: HotelWhereUniqueInput!): Hotel
+  hotelsCount(where: HotelWhereInput! = {}): Int
+  rooms(
+    where: RoomWhereInput! = {}
+    orderBy: [RoomOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [Room!]
+  room(where: RoomWhereUniqueInput!): Room
+  roomsCount(where: RoomWhereInput! = {}): Int
+  bookings(
+    where: BookingWhereInput! = {}
+    orderBy: [BookingOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [Booking!]
+  booking(where: BookingWhereUniqueInput!): Booking
+  bookingsCount(where: BookingWhereInput! = {}): Int
   keystone: KeystoneMeta!
   authenticatedItem: AuthenticatedItem
 }

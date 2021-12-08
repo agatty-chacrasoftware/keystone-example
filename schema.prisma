@@ -60,25 +60,53 @@ model Student {
   id    String            @id @default(cuid())
   name  String            @default("") @map("studentName")
   class StudentClassType? @map("class")
-  books BookAssignment[]  @relation("BookAssignment_studentName")
+  books Book[]            @relation("Book_assignToStudent")
 }
 
 model Book {
-  id                 String            @id @default(cuid())
-  title              String            @default("") @map("bookTitle")
-  category           BookCategoryType?
-  assignedToStudents BookAssignment[]  @relation("BookAssignment_bookName")
+  id              String            @id @default(cuid())
+  title           String            @default("") @map("bookTitle")
+  category        BookCategoryType?
+  assignToStudent Student[]         @relation("Book_assignToStudent")
 }
 
-model BookAssignment {
-  id            String   @id @default(cuid())
-  bookName      Book?    @relation("BookAssignment_bookName", fields: [bookNameId], references: [id])
-  bookNameId    String?  @map("bookName")
-  studentName   Student? @relation("BookAssignment_studentName", fields: [studentNameId], references: [id])
-  studentNameId String?  @map("studentName")
+model Customer {
+  id          String    @id @default(cuid())
+  Name        String    @default("") @map("name")
+  Email       String    @unique @default("") @map("email")
+  Address     String    @default("") @map("Address")
+  Pincode     Int?
+  PhoneNumber Int?
+  Rooms       Booking[] @relation("Booking_Customer")
+}
 
-  @@index([bookNameId])
-  @@index([studentNameId])
+model Hotel {
+  id      String @id @default(cuid())
+  Name    String @default("") @map("hotelName")
+  Branch  String @default("LA") @map("branchName")
+  Country String @default("India") @map("country")
+  Rooms   Room[] @relation("Room_HotelBranch")
+}
+
+model Room {
+  id              String   @id @default(cuid())
+  HotelBranch     Hotel?   @relation("Room_HotelBranch", fields: [HotelBranchId], references: [id])
+  HotelBranchId   String?  @map("HotelBranch")
+  RoomNo          Int?     @map("roomNo")
+  RoomDescription String   @default("") @map("roomDescription")
+  RoomPrice       Int?
+  Booking         Booking? @relation("Booking_Room")
+
+  @@index([HotelBranchId])
+}
+
+model Booking {
+  id       String     @id @default(cuid())
+  Customer Customer[] @relation("Booking_Customer")
+  Room     Room?      @relation("Booking_Room", fields: [RoomId], references: [id])
+  RoomId   String?    @unique @map("Room")
+  checkIn  DateTime?
+  checkOut DateTime?
 }
 
 enum StudentClassType {

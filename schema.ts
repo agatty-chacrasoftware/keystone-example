@@ -21,7 +21,9 @@ import {
   integer,
 } from '@keystone-6/core/fields';
 import { document } from '@keystone-6/fields-document';
+import { resolveModuleName } from 'typescript';
 export const lists = {
+  // User & Post example(Already Exists)
   User: list({
     fields: {
       name: text({ validation: { isRequired: true } }),
@@ -102,7 +104,9 @@ export const lists = {
     },
   }),
 
-  // first example
+  /* 
+  * Car & Upgrade example
+  */
   Car: list({
     fields: {
       model: text({validation: {isRequired: true}}),
@@ -135,7 +139,9 @@ export const lists = {
     }
   }),
 
-  // second exampe
+  /* 
+  * Student and Book example
+  */
   Student: list({
     fields: {
       name: text({
@@ -150,7 +156,10 @@ export const lists = {
         db:{map: "class"},
         ui: {displayMode: "select"}
       }),
-      books: relationship({ ref: 'BookAssignment.studentName', many: true }),
+      books: relationship({ 
+        ref: 'Book.assignToStudent', 
+        many: true 
+      }),
     },
     ui: {
       listView: {
@@ -173,28 +182,122 @@ export const lists = {
           {label: "Accountancy", value: "Accounts"}
         ]
       }),
-      assignedToStudents: relationship({ref: "BookAssignment.bookName",many: true})
+      assignToStudent: relationship(
+        {ref: "Student.books",
+        many: true,
+        ui:{
+          hideCreate: true
+        }})
     }
   }),
 
-  BookAssignment:list({
+  /* 
+    * Hotel and Bookings example
+  */
+  Customer: list({
+    fields:{
+      Name: text({
+        db:{
+          map: "name"
+        }
+      }),
+      Email: text({
+        validation: {
+          isRequired: true
+        },
+        isIndexed: 'unique',
+        db: {
+          map: "email"
+        }
+      }),
+      Address: text({
+        db: {
+          map: "Address"
+        }
+      }),
+      Pincode: integer({
+        validation: {
+          max: 5
+        }
+      }),
+      PhoneNumber: integer({
+        validation: {
+          max: 10
+        }
+      }),
+      Rooms: relationship({
+        ref: "Booking.Customer", many: true
+      })
+    }
+  }),
+
+  Hotel: list({
     fields: {
-      bookName: relationship({
-        ref: "Book.assignedToStudents",
+      Name: text({
+        db: {
+          map: "hotelName"
+        }
+      }),
+      Branch: text({
+        db: {
+          map: "branchName"
+        },
+        defaultValue: "LA"
+      }),
+      Country: text({
+        db: {
+          map: "country"
+        },
+        defaultValue: "India"
+      }),
+      Rooms: relationship({
+        ref: "Room.HotelBranch",
+        many: true
+      })
+    }
+  }),
+
+  Room: list({
+    fields: {
+      HotelBranch: relationship({
+        ref: "Hotel.Rooms",
+        many: false,
         ui: {
           hideCreate: true,
           displayMode: "select",
-          labelField: "title",
+          labelField: "Name",
         }
       }),
-      studentName: relationship({
-        ref: "Student.books",
+      RoomNo: integer({
+        db: {
+          map: "roomNo"
+        }
+      }),
+      RoomDescription: text({
+        db: {
+          map:"roomDescription"
+        }
+      }),
+      RoomPrice: integer(),
+      Booking: relationship({
+        ref: "Booking.Room", 
+        many: false,
         ui: {
-          hideCreate: true,
-          displayMode: "select",
-          labelField: "name"
+          hideCreate: true
         }
+      })
+    }
+  }),
+
+  Booking: list({
+    fields: {
+      Customer: relationship({
+        ref: "Customer.Rooms", many: true}),
+      Room: relationship({
+        ref:"Room.Booking", many: false
       }),
+      checkIn: timestamp(),
+      checkOut: timestamp()
     }
   })
 };
