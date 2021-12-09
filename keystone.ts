@@ -17,15 +17,13 @@ import { withAuth, session } from './auth';
 import dotenv from "dotenv";
 dotenv.config();
 
-const databaseURL = `postgresql://${process.env.DATABASE_USER_NAME}:${process.env.DATABASE_PASSWORD}@${process.env.DATABASE_HOST}:${process.env.DATABASE_PORT}/${process.env.DATABASE_NAME}?schema=public`
-
 export default withAuth(
  // Using the config function helps typescript guide you to the available options.
   config({
     // the db sets the database provider - we're using sqlite for the fastest startup experience
     db: {
       provider: 'postgresql',
-      url: databaseURL,
+      url: `${process.env.DATABASE_URL}`,
     },
     // This config allows us to set up features of the Admin UI https://keystonejs.com/docs/apis/config#ui
     ui: {
