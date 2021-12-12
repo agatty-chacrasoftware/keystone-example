@@ -184,7 +184,7 @@ export const lists = {
       }),
       assignToStudent: relationship(
         {ref: "Student.books",
-        many: false,
+        many: true,
         ui:{
           hideCreate: true
         }})
@@ -196,12 +196,12 @@ export const lists = {
   */
   Customer: list({
     fields:{
-      name: text({
+      Name: text({
         db:{
           map: "name"
         }
       }),
-      email: text({
+      Email: text({
         validation: {
           isRequired: true
         },
@@ -210,114 +210,94 @@ export const lists = {
           map: "email"
         }
       }),
-      address: text({
+      Address: text({
         db: {
           map: "Address"
         }
       }),
-      pincode: integer({
+      Pincode: integer({
         validation: {
-          max: 99999,
-          min: 10000
+          max: 5
         }
       }),
-      phoneNumber: integer({
+      PhoneNumber: integer({
         validation: {
-          max: 999999999,
-          min: 100000000
+          max: 10
         }
       }),
-      bookedRooms: relationship({
-        ref: "Booking.customer", many: true
+      Rooms: relationship({
+        ref: "Booking.Customer", many: true
       })
-    },
-    ui: {
-      listView: {
-        initialColumns: ["name", "bookedRooms"]
-      }
     }
   }),
 
   Hotel: list({
     fields: {
-      name: text({
+      Name: text({
         db: {
           map: "hotelName"
         }
       }),
-      branch: text({
+      Branch: text({
         db: {
           map: "branchName"
-        }
+        },
+        defaultValue: "LA"
       }),
-      country: text({
+      Country: text({
         db: {
           map: "country"
         },
         defaultValue: "India"
       }),
-      rooms: relationship({
-        ref: "Room.hotelBranch",
+      Rooms: relationship({
+        ref: "Room.HotelBranch",
         many: true
       })
-    },
-    ui: {
-      listView: {
-        initialColumns: ["name", "rooms"]
-      }
     }
   }),
 
   Room: list({
     fields: {
-      name: text({
+      HotelBranch: relationship({
+        ref: "Hotel.Rooms",
+        many: false,
+        ui: {
+          hideCreate: true,
+          displayMode: "select",
+          labelField: "Name",
+        }
+      }),
+      RoomNo: integer({
         db: {
           map: "roomNo"
         }
       }),
-      roomDescription: text({
+      RoomDescription: text({
         db: {
           map:"roomDescription"
         }
       }),
-      roomPrice: integer(),
-      hotelBranch: relationship({
-        ref: "Hotel.rooms",
+      RoomPrice: integer(),
+      Booking: relationship({
+        ref: "Booking.Room", 
         many: false,
-      }),
-      bookings: relationship({
-        ref: "Booking.rooms", 
-        many: false
+        ui: {
+          hideCreate: true
+        }
       })
-    },
-    ui: {
-      listView: {
-        initialColumns: ["name", "hotelBranch", "bookings"]
-      }
     }
   }),
 
   Booking: list({
     fields: {
-      customer: relationship({
-        ref: "Customer.bookedRooms", many: false,
-      ui: {
-        hideCreate: true
-      }}),
-      rooms: relationship({
-        ref:"Room.bookings", 
-        many: true,
-        ui: {
-          hideCreate: true
-        }
+      Customer: relationship({
+        ref: "Customer.Rooms", many: true}),
+      Room: relationship({
+        ref:"Room.Booking", many: false
       }),
       checkIn: timestamp(),
       checkOut: timestamp()
-    },
-    ui: {
-      listView: {
-        initialColumns: ["customer", "rooms","checkIn","checkOut"]
-      }
     }
   })
 };
