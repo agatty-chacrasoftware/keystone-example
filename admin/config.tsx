@@ -3,14 +3,9 @@
 /** @jsx jsx */
 import { AdminConfig } from '@keystone-6/core/types';
 import { jsx } from '@keystone-ui/core';
-import customIcon from"../image/Icon.png";
 
 function CustomLogo () {
-    const config = <a href="https://www.chacrasoftware.com/">
-    <img css = {{display: "inline-block", width: "250px", height: "auto"}} src={customIcon.src} alt="Chacra Software"/>
-  </a>
-    // return <img css = {{display: "inline-block", width: "250px", height: "auto"}} src = "image/Icon.png" alt = "Chacra Software"/>
-    return config;
+    return <img css = {{display: "inline-block", width: "250px", height: "auto"}} src = "https://outwardhound.com/furtropolis/wp-content/uploads/2020/03/Doggo-Lingo-Post.jpg" alt = "Chacra Software"/>
 }
 export const components: AdminConfig['components'] = {
     Logo: CustomLogo
