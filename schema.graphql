@@ -533,13 +533,7 @@ type Book {
   id: ID!
   title: String
   category: BookCategoryType
-  assignToStudent(
-    where: StudentWhereInput! = {}
-    orderBy: [StudentOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [Student!]
-  assignToStudentCount(where: StudentWhereInput! = {}): Int
+  assignToStudent: Student
 }
 
 enum BookCategoryType {
@@ -560,7 +554,7 @@ input BookWhereInput {
   id: IDFilter
   title: StringFilter
   category: BookCategoryTypeNullableFilter
-  assignToStudent: StudentManyRelationFilter
+  assignToStudent: StudentWhereInput
 }
 
 input BookCategoryTypeNullableFilter {
@@ -568,12 +562,6 @@ input BookCategoryTypeNullableFilter {
   in: [BookCategoryType!]
   notIn: [BookCategoryType!]
   not: BookCategoryTypeNullableFilter
-}
-
-input StudentManyRelationFilter {
-  every: StudentWhereInput
-  some: StudentWhereInput
-  none: StudentWhereInput
 }
 
 input BookOrderByInput {
@@ -585,14 +573,13 @@ input BookOrderByInput {
 input BookUpdateInput {
   title: String
   category: BookCategoryType
-  assignToStudent: StudentRelateToManyForUpdateInput
+  assignToStudent: StudentRelateToOneForUpdateInput
 }
 
-input StudentRelateToManyForUpdateInput {
-  disconnect: [StudentWhereUniqueInput!]
-  set: [StudentWhereUniqueInput!]
-  create: [StudentCreateInput!]
-  connect: [StudentWhereUniqueInput!]
+input StudentRelateToOneForUpdateInput {
+  create: StudentCreateInput
+  connect: StudentWhereUniqueInput
+  disconnect: Boolean
 }
 
 input BookUpdateArgs {
@@ -603,33 +590,33 @@ input BookUpdateArgs {
 input BookCreateInput {
   title: String
   category: BookCategoryType
-  assignToStudent: StudentRelateToManyForCreateInput
+  assignToStudent: StudentRelateToOneForCreateInput
 }
 
-input StudentRelateToManyForCreateInput {
-  create: [StudentCreateInput!]
-  connect: [StudentWhereUniqueInput!]
+input StudentRelateToOneForCreateInput {
+  create: StudentCreateInput
+  connect: StudentWhereUniqueInput
 }
 
 type Customer {
   id: ID!
-  Name: String
-  Email: String
-  Address: String
-  Pincode: Int
-  PhoneNumber: Int
-  Rooms(
+  name: String
+  email: String
+  address: String
+  pincode: Int
+  phoneNumber: Int
+  bookedRooms(
     where: BookingWhereInput! = {}
     orderBy: [BookingOrderByInput!]! = []
     take: Int
     skip: Int! = 0
   ): [Booking!]
-  RoomsCount(where: BookingWhereInput! = {}): Int
+  bookedRoomsCount(where: BookingWhereInput! = {}): Int
 }
 
 input CustomerWhereUniqueInput {
   id: ID
-  Email: String
+  email: String
 }
 
 input CustomerWhereInput {
@@ -637,12 +624,12 @@ input CustomerWhereInput {
   OR: [CustomerWhereInput!]
   NOT: [CustomerWhereInput!]
   id: IDFilter
-  Name: StringFilter
-  Email: StringFilter
-  Address: StringFilter
-  Pincode: IntNullableFilter
-  PhoneNumber: IntNullableFilter
-  Rooms: BookingManyRelationFilter
+  name: StringFilter
+  email: StringFilter
+  address: StringFilter
+  pincode: IntNullableFilter
+  phoneNumber: IntNullableFilter
+  bookedRooms: BookingManyRelationFilter
 }
 
 input IntNullableFilter {
@@ -664,20 +651,20 @@ input BookingManyRelationFilter {
 
 input CustomerOrderByInput {
   id: OrderDirection
-  Name: OrderDirection
-  Email: OrderDirection
-  Address: OrderDirection
-  Pincode: OrderDirection
-  PhoneNumber: OrderDirection
+  name: OrderDirection
+  email: OrderDirection
+  address: OrderDirection
+  pincode: OrderDirection
+  phoneNumber: OrderDirection
 }
 
 input CustomerUpdateInput {
-  Name: String
-  Email: String
-  Address: String
-  Pincode: Int
-  PhoneNumber: Int
-  Rooms: BookingRelateToManyForUpdateInput
+  name: String
+  email: String
+  address: String
+  pincode: Int
+  phoneNumber: Int
+  bookedRooms: BookingRelateToManyForUpdateInput
 }
 
 input BookingRelateToManyForUpdateInput {
@@ -693,12 +680,12 @@ input CustomerUpdateArgs {
 }
 
 input CustomerCreateInput {
-  Name: String
-  Email: String
-  Address: String
-  Pincode: Int
-  PhoneNumber: Int
-  Rooms: BookingRelateToManyForCreateInput
+  name: String
+  email: String
+  address: String
+  pincode: Int
+  phoneNumber: Int
+  bookedRooms: BookingRelateToManyForCreateInput
 }
 
 input BookingRelateToManyForCreateInput {
@@ -708,16 +695,16 @@ input BookingRelateToManyForCreateInput {
 
 type Hotel {
   id: ID!
-  Name: String
-  Branch: String
-  Country: String
-  Rooms(
+  name: String
+  branch: String
+  country: String
+  rooms(
     where: RoomWhereInput! = {}
     orderBy: [RoomOrderByInput!]! = []
     take: Int
     skip: Int! = 0
   ): [Room!]
-  RoomsCount(where: RoomWhereInput! = {}): Int
+  roomsCount(where: RoomWhereInput! = {}): Int
 }
 
 input HotelWhereUniqueInput {
@@ -729,10 +716,10 @@ input HotelWhereInput {
   OR: [HotelWhereInput!]
   NOT: [HotelWhereInput!]
   id: IDFilter
-  Name: StringFilter
-  Branch: StringFilter
-  Country: StringFilter
-  Rooms: RoomManyRelationFilter
+  name: StringFilter
+  branch: StringFilter
+  country: StringFilter
+  rooms: RoomManyRelationFilter
 }
 
 input RoomManyRelationFilter {
@@ -743,16 +730,16 @@ input RoomManyRelationFilter {
 
 input HotelOrderByInput {
   id: OrderDirection
-  Name: OrderDirection
-  Branch: OrderDirection
-  Country: OrderDirection
+  name: OrderDirection
+  branch: OrderDirection
+  country: OrderDirection
 }
 
 input HotelUpdateInput {
-  Name: String
-  Branch: String
-  Country: String
-  Rooms: RoomRelateToManyForUpdateInput
+  name: String
+  branch: String
+  country: String
+  rooms: RoomRelateToManyForUpdateInput
 }
 
 input RoomRelateToManyForUpdateInput {
@@ -768,10 +755,10 @@ input HotelUpdateArgs {
 }
 
 input HotelCreateInput {
-  Name: String
-  Branch: String
-  Country: String
-  Rooms: RoomRelateToManyForCreateInput
+  name: String
+  branch: String
+  country: String
+  rooms: RoomRelateToManyForCreateInput
 }
 
 input RoomRelateToManyForCreateInput {
@@ -781,11 +768,11 @@ input RoomRelateToManyForCreateInput {
 
 type Room {
   id: ID!
-  HotelBranch: Hotel
-  RoomNo: Int
-  RoomDescription: String
-  RoomPrice: Int
-  Booking: Booking
+  name: String
+  roomDescription: String
+  roomPrice: Int
+  hotelBranch: Hotel
+  bookings: Booking
 }
 
 input RoomWhereUniqueInput {
@@ -797,26 +784,26 @@ input RoomWhereInput {
   OR: [RoomWhereInput!]
   NOT: [RoomWhereInput!]
   id: IDFilter
-  HotelBranch: HotelWhereInput
-  RoomNo: IntNullableFilter
-  RoomDescription: StringFilter
-  RoomPrice: IntNullableFilter
-  Booking: BookingWhereInput
+  name: StringFilter
+  roomDescription: StringFilter
+  roomPrice: IntNullableFilter
+  hotelBranch: HotelWhereInput
+  bookings: BookingWhereInput
 }
 
 input RoomOrderByInput {
   id: OrderDirection
-  RoomNo: OrderDirection
-  RoomDescription: OrderDirection
-  RoomPrice: OrderDirection
+  name: OrderDirection
+  roomDescription: OrderDirection
+  roomPrice: OrderDirection
 }
 
 input RoomUpdateInput {
-  HotelBranch: HotelRelateToOneForUpdateInput
-  RoomNo: Int
-  RoomDescription: String
-  RoomPrice: Int
-  Booking: BookingRelateToOneForUpdateInput
+  name: String
+  roomDescription: String
+  roomPrice: Int
+  hotelBranch: HotelRelateToOneForUpdateInput
+  bookings: BookingRelateToOneForUpdateInput
 }
 
 input HotelRelateToOneForUpdateInput {
@@ -837,11 +824,11 @@ input RoomUpdateArgs {
 }
 
 input RoomCreateInput {
-  HotelBranch: HotelRelateToOneForCreateInput
-  RoomNo: Int
-  RoomDescription: String
-  RoomPrice: Int
-  Booking: BookingRelateToOneForCreateInput
+  name: String
+  roomDescription: String
+  roomPrice: Int
+  hotelBranch: HotelRelateToOneForCreateInput
+  bookings: BookingRelateToOneForCreateInput
 }
 
 input HotelRelateToOneForCreateInput {
@@ -856,16 +843,14 @@ input BookingRelateToOneForCreateInput {
 
 type Booking {
   id: ID!
-  Customer(
-    where: CustomerWhereInput! = {}
-    orderBy: [CustomerOrderByInput!]! = []
+  customer: Customer
+  rooms(
+    where: RoomWhereInput! = {}
+    orderBy: [RoomOrderByInput!]! = []
     take: Int
     skip: Int! = 0
-  ): [Customer!]
-  CustomerCount(where: CustomerWhereInput! = {}): Int
-  Room: Room
-  checkIn: DateTime
-  checkOut: DateTime
+  ): [Room!]
+  roomsCount(where: RoomWhereInput! = {}): Int
 }
 
 input BookingWhereUniqueInput {
@@ -877,41 +862,22 @@ input BookingWhereInput {
   OR: [BookingWhereInput!]
   NOT: [BookingWhereInput!]
   id: IDFilter
-  Customer: CustomerManyRelationFilter
-  Room: RoomWhereInput
-  checkIn: DateTimeNullableFilter
-  checkOut: DateTimeNullableFilter
-}
-
-input CustomerManyRelationFilter {
-  every: CustomerWhereInput
-  some: CustomerWhereInput
-  none: CustomerWhereInput
+  customer: CustomerWhereInput
+  rooms: RoomManyRelationFilter
 }
 
 input BookingOrderByInput {
   id: OrderDirection
-  checkIn: OrderDirection
-  checkOut: OrderDirection
 }
 
 input BookingUpdateInput {
-  Customer: CustomerRelateToManyForUpdateInput
-  Room: RoomRelateToOneForUpdateInput
-  checkIn: DateTime
-  checkOut: DateTime
+  customer: CustomerRelateToOneForUpdateInput
+  rooms: RoomRelateToManyForUpdateInput
 }
 
-input CustomerRelateToManyForUpdateInput {
-  disconnect: [CustomerWhereUniqueInput!]
-  set: [CustomerWhereUniqueInput!]
-  create: [CustomerCreateInput!]
-  connect: [CustomerWhereUniqueInput!]
-}
-
-input RoomRelateToOneForUpdateInput {
-  create: RoomCreateInput
-  connect: RoomWhereUniqueInput
+input CustomerRelateToOneForUpdateInput {
+  create: CustomerCreateInput
+  connect: CustomerWhereUniqueInput
   disconnect: Boolean
 }
 
@@ -921,20 +887,13 @@ input BookingUpdateArgs {
 }
 
 input BookingCreateInput {
-  Customer: CustomerRelateToManyForCreateInput
-  Room: RoomRelateToOneForCreateInput
-  checkIn: DateTime
-  checkOut: DateTime
+  customer: CustomerRelateToOneForCreateInput
+  rooms: RoomRelateToManyForCreateInput
 }
 
-input CustomerRelateToManyForCreateInput {
-  create: [CustomerCreateInput!]
-  connect: [CustomerWhereUniqueInput!]
-}
-
-input RoomRelateToOneForCreateInput {
-  create: RoomCreateInput
-  connect: RoomWhereUniqueInput
+input CustomerRelateToOneForCreateInput {
+  create: CustomerCreateInput
+  connect: CustomerWhereUniqueInput
 }
 
 """

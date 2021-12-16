@@ -1,15 +1,12 @@
 /*
 Welcome to the schema! The schema is the heart of Keystone.
-
 Here we define our 'lists', which will then be used both for the GraphQL
 API definition, our database tables, and our Admin UI layout.
-
 Some quick definitions to help out:
 A list: A definition of a collection of fields with a name. For the starter
   we have `User`, `Post`, and `Tag` lists.
 A field: The individual bits of data on your list, each with its own type.
   you can see some of the lists in what we use below.
-
 */
 import { list } from '@keystone-6/core';
 import {
@@ -184,7 +181,7 @@ export const lists = {
       }),
       assignToStudent: relationship(
         {ref: "Student.books",
-        many: true,
+        many: false,
         ui:{
           hideCreate: true
         }})
@@ -196,12 +193,12 @@ export const lists = {
   */
   Customer: list({
     fields:{
-      Name: text({
+      name: text({
         db:{
           map: "name"
         }
       }),
-      Email: text({
+      email: text({
         validation: {
           isRequired: true
         },
@@ -210,94 +207,112 @@ export const lists = {
           map: "email"
         }
       }),
-      Address: text({
+      address: text({
         db: {
           map: "Address"
         }
       }),
-      Pincode: integer({
+      pincode: integer({
         validation: {
-          max: 5
+          max: 99999,
+          min: 10000
         }
       }),
-      PhoneNumber: integer({
+      phoneNumber: integer({
         validation: {
-          max: 10
+          max: 999999999,
+          min: 100000000
         }
       }),
-      Rooms: relationship({
-        ref: "Booking.Customer", many: true
+      bookedRooms: relationship({
+        ref: "Booking.customer", many: true
       })
+    },
+    ui: {
+      listView: {
+        initialColumns: ["name", "bookedRooms"]
+      }
     }
   }),
 
   Hotel: list({
     fields: {
-      Name: text({
+      name: text({
         db: {
           map: "hotelName"
         }
       }),
-      Branch: text({
+      branch: text({
         db: {
           map: "branchName"
-        },
-        defaultValue: "LA"
+        }
       }),
-      Country: text({
+      country: text({
         db: {
           map: "country"
         },
         defaultValue: "India"
       }),
-      Rooms: relationship({
-        ref: "Room.HotelBranch",
+      rooms: relationship({
+        ref: "Room.hotelBranch",
         many: true
       })
+    },
+    ui: {
+      listView: {
+        initialColumns: ["name", "rooms"]
+      }
     }
   }),
 
   Room: list({
     fields: {
-      HotelBranch: relationship({
-        ref: "Hotel.Rooms",
-        many: false,
-        ui: {
-          hideCreate: true,
-          displayMode: "select",
-          labelField: "Name",
-        }
-      }),
-      RoomNo: integer({
+      name: text({
         db: {
           map: "roomNo"
         }
       }),
-      RoomDescription: text({
+      roomDescription: text({
         db: {
           map:"roomDescription"
         }
       }),
-      RoomPrice: integer(),
-      Booking: relationship({
-        ref: "Booking.Room", 
+      roomPrice: integer(),
+      hotelBranch: relationship({
+        ref: "Hotel.rooms",
         many: false,
-        ui: {
-          hideCreate: true
-        }
+      }),
+      bookings: relationship({
+        ref: "Booking.rooms", 
+        many: false
       })
+    },
+    ui: {
+      listView: {
+        initialColumns: ["name", "hotelBranch", "bookings"]
+      }
     }
   }),
 
   Booking: list({
     fields: {
-      Customer: relationship({
-        ref: "Customer.Rooms", many: true}),
-      Room: relationship({
-        ref:"Room.Booking", many: false
+      customer: relationship({
+        ref: "Customer.bookedRooms", many: false,
+      ui: {
+        hideCreate: true
+      }}),
+      rooms: relationship({
+        ref:"Room.bookings", 
+        many: true,
+        ui: {
+          hideCreate: true
+        }
       }),
-      checkIn: timestamp(),
-      checkOut: timestamp()
+    },
+    ui: {
+      listView: {
+        initialColumns: ["customer", "rooms"]
+      }
     }
   })
 };
